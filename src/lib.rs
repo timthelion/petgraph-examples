@@ -223,3 +223,42 @@ pub fn multi_component() -> Graph<String, String, petgraph::Undirected> {
     g.add_node("component b".to_string());
     g
 }
+
+pub fn moravia() -> Graph<String, f32, petgraph::Undirected> {
+    let mut g = Graph::new_undirected();
+    let brno = g.add_node("Brno".to_string());
+    let zdlch = g.add_node("Židlochovice".to_string());
+    let pohor = g.add_node("Pohořelice".to_string());
+    let vysko = g.add_node("Vyškov".to_string());
+    let blansk = g.add_node("Blansko".to_string());
+    let trebic = g.add_node("Třebíč".to_string());
+    let mbud = g.add_node("Mor. Buďějovice".to_string());
+    let jihl = g.add_node("Jihlava".to_string());
+    let jemn = g.add_node("Jemnice".to_string());
+    let znojmo = g.add_node("Znojmo".to_string());
+    let novmest = g.add_node("Nové Město".to_string());
+    let mtreb = g.add_node("Mor. Třebová".to_string());
+    g.add_edge(brno, trebic, 87.5);
+    g.add_edge(brno, zdlch, 21.9);
+    g.add_edge(brno, vysko, 43.1);
+    g.add_edge(brno, blansk, 26.4);
+    g.add_edge(pohor, zdlch, 11.7);
+    g.add_edge(pohor, trebic, 80.0);
+    g.add_edge(blansk, mtreb, 61.8);
+    g.add_edge(trebic, mbud, 27.3);
+    g.add_edge(mbud, znojmo, 56.6);
+    g.add_edge(brno, znojmo, 101.6);
+    g.add_edge(mbud, jemn, 39.0);
+    g.add_edge(jihl, trebic, 45.1);
+    g.add_edge(jihl, jemn, 67.3);
+    g.add_edge(jemn, znojmo, 82.6);
+    g.add_edge(pohor, znojmo, 80.8);
+    g.add_edge(novmest, jihl, 64.5);
+    g.add_edge(novmest, brno, 87.6);
+    g.add_edge(novmest, trebic, 70.9);
+    g.add_edge(novmest, blansk, 75.0);
+    g.add_edge(novmest, mtreb, 89.4);
+    g.add_edge(vysko, blansk, 37.0);
+    g.add_edge(vysko, zdlch, 56.9);
+    g
+}
