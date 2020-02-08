@@ -1,67 +1,225 @@
-//! Used for displaying petgraph graphs in jupyter using the evcxr rust engine.
+//! Example petgraph graphs
 extern crate petgraph;
-use std::fmt::{self, Display};
-use std::io::{self, Write};
-use std::process::{Command, Stdio};
-
-use base64;
-
-use crate::petgraph::visit::{Data, GraphProp, NodeRef};
-use crate::petgraph::visit::{EdgeRef, IntoEdgeReferences, IntoNodeReferences, NodeIndexable};
-use petgraph::dot::Dot;
 use petgraph::graph::Graph;
 
-/// Draw the contents of a dot file.
-/// ```rust
-/// # use petgraph_evcxr::draw_dot;
-/// let dot = "digraph {\
-/// 0 [label=\"a\"]\
-/// 1 [label=\"b\"]\
-/// 0 -> 1 [label=\"a → b\"]\
-/// }";
-/// draw_dot(dot);
-/// ```
-pub fn draw_dot<D>(dot: D)
-where
-    D: fmt::Display,
-{
-    println!("EVCXR_BEGIN_CONTENT image/png");
-    let mut child = Command::new("dot")
-        .args(&["-Tpng"])
-        .stdin(Stdio::piped())
-        .stdout(Stdio::piped())
-        .spawn()
-        .expect("Error running graphviz dot is graphviz installed?");
-    child
-        .stdin
-        .as_mut()
-        .unwrap()
-        .write_fmt(format_args!("{}", dot));
-    let output = child
-        .wait_with_output()
-        .expect("Failed to run dot is graphviz installed?");
-    println!("{}", base64::encode(&output.stdout[..]));
-    println!("EVCXR_END_CONTENT");
+pub fn singleton() -> Graph<String, String, petgraph::Undirected> {
+    let mut g = Graph::new_undirected();
+    g.add_node("only value".to_string());
+    g
 }
 
-/// Draw a petgraph graph
-/// ```rust
-/// # extern crate petgraph;
-/// # use petgraph::graph::Graph;
-/// # use petgraph::dot::Dot;
-/// # use petgraph_evcxr::draw_graph;
-/// let mut g : Graph<&str, &str> = Graph::new();
-/// let a = g.add_node("a");
-/// let b = g.add_node("b");
-/// g.add_edge(a, b, "a to b");
-/// draw_graph(&g);
-/// ```
-pub fn draw_graph<G>(g: G)
-where
-    G: NodeIndexable + IntoNodeReferences + IntoEdgeReferences,
-    G: GraphProp,
-    G::NodeWeight: fmt::Display,
-    G::EdgeWeight: fmt::Display,
-{
-    draw_dot(Dot::new(&g));
+pub fn list() -> Graph<String, String, petgraph::Undirected> {
+    let mut g = Graph::new_undirected();
+    let item1 = g.add_node("a".to_string());
+    let item2 = g.add_node("b".to_string());
+    let item3 = g.add_node("c".to_string());
+    g.add_edge(item1, item2, "".to_string());
+    g.add_edge(item2, item3, "".to_string());
+    g
+}
+
+pub fn table() -> Graph<String, String, petgraph::Undirected> {
+    let mut g = Graph::new_undirected();
+    let cellA1 = g.add_node("A1".to_string());
+    let cellA2 = g.add_node("A2".to_string());
+    let cellA3 = g.add_node("A3".to_string());
+
+    let cellB1 = g.add_node("B1".to_string());
+    let cellB2 = g.add_node("B2".to_string());
+    let cellB3 = g.add_node("B3".to_string());
+
+    let cellC1 = g.add_node("C1".to_string());
+    let cellC2 = g.add_node("C2".to_string());
+    let cellC3 = g.add_node("C3".to_string());
+
+    // Columns
+    g.add_edge(cellA1, cellA2, "".to_string());
+    g.add_edge(cellA2, cellA3, "".to_string());
+
+    g.add_edge(cellB1, cellB2, "".to_string());
+    g.add_edge(cellB2, cellB3, "".to_string());
+
+    g.add_edge(cellC1, cellC2, "".to_string());
+    g.add_edge(cellC2, cellC3, "".to_string());
+
+    // Rows
+    g.add_edge(cellA1, cellB1, "".to_string());
+    g.add_edge(cellB1, cellC1, "".to_string());
+
+    g.add_edge(cellA2, cellB2, "".to_string());
+    g.add_edge(cellB2, cellC2, "".to_string());
+
+    g.add_edge(cellA3, cellB3, "".to_string());
+    g.add_edge(cellB3, cellC3, "".to_string());
+    g
+}
+
+pub fn tree() -> Graph<String, String, petgraph::Directed> {
+    let mut g = Graph::new();
+    let tree_item1 = g.add_node("a".to_string());
+    let tree_item2 = g.add_node("b".to_string());
+    let tree_item3 = g.add_node("c".to_string());
+    let tree_item4 = g.add_node("d".to_string());
+    let tree_item5 = g.add_node("e".to_string());
+    g.add_edge(tree_item1, tree_item2, "".to_string());
+    g.add_edge(tree_item1, tree_item3, "".to_string());
+    g.add_edge(tree_item2, tree_item4, "".to_string());
+    g.add_edge(tree_item2, tree_item5, "".to_string());
+    g
+}
+
+pub fn dag() -> Graph<String, String, petgraph::Directed> {
+    let mut g = Graph::new();
+    let dag_item1 = g.add_node("a".to_string());
+    let dag_item2 = g.add_node("b".to_string());
+    let dag_item3 = g.add_node("c".to_string());
+    let dag_item4 = g.add_node("d".to_string());
+    let dag_item5 = g.add_node("e".to_string());
+    let dag_item6 = g.add_node("f".to_string());
+    g.add_edge(dag_item1, dag_item2, "".to_string());
+    g.add_edge(dag_item1, dag_item3, "".to_string());
+    g.add_edge(dag_item2, dag_item4, "".to_string());
+    g.add_edge(dag_item2, dag_item5, "".to_string());
+    g.add_edge(dag_item4, dag_item6, "".to_string());
+    g.add_edge(dag_item5, dag_item6, "".to_string());
+    g
+}
+
+pub fn directed_graph_with_cycle() -> Graph<String, String, petgraph::Directed> {
+    let mut g = Graph::new();
+    let gwc_item1 = g.add_node("a".to_string());
+    let gwc_item2 = g.add_node("b".to_string());
+    let gwc_item3 = g.add_node("c".to_string());
+    let gwc_item4 = g.add_node("d".to_string());
+    let gwc_item5 = g.add_node("e".to_string());
+    let gwc_item6 = g.add_node("f".to_string());
+    g.add_edge(gwc_item1, gwc_item2, "".to_string());
+    g.add_edge(gwc_item1, gwc_item3, "".to_string());
+    g.add_edge(gwc_item2, gwc_item4, "".to_string());
+    g.add_edge(gwc_item2, gwc_item5, "".to_string());
+    g.add_edge(gwc_item4, gwc_item6, "".to_string());
+    g.add_edge(gwc_item5, gwc_item6, "".to_string());
+    g.add_edge(gwc_item6, gwc_item1, "".to_string());
+    g
+}
+
+pub fn directed_graph_with_loop() -> Graph<String, String, petgraph::Directed> {
+    let mut g = Graph::new();
+    let gwc_item1 = g.add_node("a".to_string());
+    let gwc_item2 = g.add_node("b".to_string());
+    let gwc_item3 = g.add_node("c".to_string());
+    let gwc_item4 = g.add_node("d".to_string());
+    let gwc_item5 = g.add_node("e".to_string());
+    let gwc_item6 = g.add_node("f".to_string());
+    g.add_edge(gwc_item1, gwc_item2, "".to_string());
+    g.add_edge(gwc_item1, gwc_item3, "".to_string());
+    g.add_edge(gwc_item2, gwc_item4, "".to_string());
+    g.add_edge(gwc_item2, gwc_item5, "".to_string());
+    g.add_edge(gwc_item4, gwc_item6, "".to_string());
+    g.add_edge(gwc_item5, gwc_item6, "".to_string());
+    g.add_edge(gwc_item6, gwc_item6, "".to_string());
+    g
+}
+
+pub fn ring() -> Graph<String, String, petgraph::Undirected> {
+    let mut g = Graph::new_undirected();
+    let ring_item1 = g.add_node("a".to_string());
+    let ring_item2 = g.add_node("b".to_string());
+    let ring_item3 = g.add_node("c".to_string());
+    let ring_item4 = g.add_node("d".to_string());
+    g.add_edge(ring_item1, ring_item2, "".to_string());
+    g.add_edge(ring_item2, ring_item3, "".to_string());
+    g.add_edge(ring_item3, ring_item4, "".to_string());
+    g.add_edge(ring_item4, ring_item1, "".to_string());
+    g
+}
+
+pub fn dict() -> Graph<String, String, petgraph::Directed> {
+    let mut g = Graph::new();
+    let core = g.add_node("dict".to_string());
+
+    let key1 = g.add_node("key 1".to_string());
+    let key2 = g.add_node("key 2".to_string());
+    let key3 = g.add_node("key 3".to_string());
+
+    let value1 = g.add_node("value 1".to_string());
+    let value2 = g.add_node("value 2".to_string());
+    let value3 = g.add_node("value 3".to_string());
+
+    g.add_edge(core, key1, "".to_string());
+    g.add_edge(core, key2, "".to_string());
+    g.add_edge(core, key3, "".to_string());
+
+    g.add_edge(key1, value1, "".to_string());
+    g.add_edge(key2, value2, "".to_string());
+    g.add_edge(key3, value3, "".to_string());
+    g
+}
+
+use std::fmt;
+
+#[derive(Debug, Clone)]
+pub struct Person {
+    name: String,
+    age: u8,
+}
+
+#[derive(Debug, Copy, Clone)]
+pub enum Relationship {
+    Friend,
+    Parent,
+    Boss,
+}
+
+impl fmt::Display for Person {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}, {}", self.name, self.age)
+    }
+}
+
+impl fmt::Display for Relationship {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{:?}", self)
+    }
+}
+
+pub fn social() -> Graph<Person, Relationship, petgraph::Directed> {
+    let mut g = Graph::new();
+    let bob = g.add_node(Person {
+        name: "Bob".to_string(),
+        age: 37,
+    });
+    let alice = g.add_node(Person {
+        name: "Alice".to_string(),
+        age: 17,
+    });
+    g.add_edge(bob, alice, Relationship::Parent);
+
+    let lilly = g.add_node(Person {
+        name: "Lilly".to_string(),
+        age: 50,
+    });
+    g.add_edge(lilly, bob, Relationship::Boss);
+
+    let george = g.add_node(Person {
+        name: "George".to_string(),
+        age: 16,
+    });
+    g.add_edge(george, alice, Relationship::Friend);
+    g.add_edge(lilly, george, Relationship::Parent);
+
+    let fred = g.add_node(Person {
+        name: "Fred".to_string(),
+        age: 16,
+    });
+    g.add_edge(george, fred, Relationship::Friend);
+    g.add_edge(alice, fred, Relationship::Friend);
+    g
+}
+
+pub fn multi_component() -> Graph<String, String, petgraph::Undirected> {
+    let mut g = Graph::new_undirected();
+    g.add_node("component a".to_string());
+    g.add_node("component b".to_string());
+    g
 }
