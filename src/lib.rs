@@ -160,8 +160,8 @@ use std::fmt;
 
 #[derive(Debug, Clone, Eq, PartialEq)]
 pub struct Person {
-    name: String,
-    age: u8,
+    pub name: String,
+    pub age: u8,
 }
 
 #[derive(Debug, Copy, Clone, Eq, PartialEq)]
