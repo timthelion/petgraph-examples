@@ -158,13 +158,13 @@ pub fn dict() -> Graph<String, String, petgraph::Directed> {
 
 use std::fmt;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Eq, PartialEq)]
 pub struct Person {
     name: String,
     age: u8,
 }
 
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, Eq, PartialEq)]
 pub enum Relationship {
     Friend,
     Parent,
